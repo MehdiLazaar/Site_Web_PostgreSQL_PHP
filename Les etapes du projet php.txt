@@ -1,0 +1,8 @@
+Une page listant son contenu et proposant un lien permettant d acceder a un formulaire d insertion d un nouvel enregistrement
+Pour chaque enregistrement de chaque table, la presentation de l enregistrement sera associer a des liens permettant de le modifier(via un formulaire) ou de le supprimer.
+
+Etapes 1 : Creation de la page d accueil index c fait
+Etape 2: une page listant son contenu
+
+
+
