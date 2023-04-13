@@ -201,7 +201,8 @@ function getAllSport() : array {
 }
 function getAllPratique() : array {
     $ptrDB = connexion();
-    $query = "SELECT Athlète_Nom, Athlète_Prénom FROM Pratique NATURAL JOIN Sport, Athlète";
+    $query = "SELECT Athlète_Nom AS Nom, Athlète_Prénom AS prènom,Athlète_Nationalité AS nationalité, Athlète_Sexe 
+                                    AS Sexe, Sport_Catégorie, Sport_Type FROM Athlète NATURAL JOIN Sport NATURAL JOIN Pratique";
     //Preparation de la requete
     pg_prepare($ptrDB,'reqPrepSelectAllPratique',$query);
     $ptrQuery = pg_execute($ptrDB,'reqPrepSelectAllPratique',array());
@@ -283,4 +284,35 @@ function deleteSport(String $id) {
     pg_prepare($ptrDB, 'reqPrepDeletSport',$query);
     pg_execute($ptrDB,'reqPrepDeletSport',array($id));
 }
+function getAthleteByNom(String $nom) : array {
+    $ptrDB = connexion();
+    $query = "SELECT * FROM Athlète WHERE Athlète_Nom = $1";
+    // La fonction pg_prepare pour preparer la requete
+    pg_prepare($ptrDB,'reqPrepSelectByNom',$query);
+    $ptrQuery = pg_execute($ptrDB,'reqPrepSelectByNom',array($nom));
+    if(isset($ptrQuery)){
+        //recuperation du tableau associatif avec pg_fetch_assoc dans $resu
+        $resu = pg_fetch_row($ptrQuery, 0);
+        if(empty($resu)){
+            $resu = array("message" => "Nom introuvable : $nom");
+        }
+    }
+    //Liberation de ressource
+    pg_free_result($ptrQuery);
+    //On ferme la connexion avec pg_close()
+    pg_close($ptrDB);
+    return $resu;
+}
+/*function getFormulaire(array $formu){
+    $ptrDB = connexion();
+    //Preparation de la requete
+    $query = "SELECT Athlète_Nom AS Nom, Athlète_Prénom AS prènom,Athlète_Nationalité AS nationalité, Athlète_Sexe 
+    AS Sexe, Sport_Catégorie, Sport_Type FROM Athlète NATURAL JOIN Sport NATURAL JOIN Pratique";
+    pg_prepare($ptrDB,'reqDuFormulaire',$query);
+    //execution de la requete
+    $ptrQuery = pg_execute($ptrDB,'reqDuFormulaire',$formu);
+    while($lignes = pg_fetch_row($ptrQuery)){
+        $resu = "<option value='".$lignes['Athlète_Nom']."'>".$lignes['Athlète_Nom']." (".$lignes['Athlète_Prénom']
+    }
+}*/
 ?>
