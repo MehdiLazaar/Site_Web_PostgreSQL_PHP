@@ -148,9 +148,9 @@ function getAllAthlete() : array {
     $resu = array();
     if($ptrQuery){
         $resu[] = '<table border = "2">';
-        $attributs = array("Athlète Id","Nom","Prénom","Nationalité","Sexe");
+        $attributs = array("Athlète Id","Nom","Prénom","Nationalité","Sexe","Update");
         foreach($attributs as $att){
-            $resu[] .= "<th> $att </th>";
+            $resu[] .= "<th> $att </th>" ;
         }
         $numeroLigne = 0;
         while($ligne = pg_fetch_row($ptrQuery)){
@@ -178,7 +178,7 @@ function getAllSport() : array {
     $resu = array();
     if($ptrQuery){
         $resu[] = '<table border = "2">';
-        $attributs = array("Sport Id","Catégorie","Type");
+        $attributs = array("Sport Id","Catégorie","Type","Update");
         foreach($attributs as $att){
             $resu[] .= "<th> $att </th>";
         }
@@ -209,7 +209,7 @@ function getAllPratique() : array {
     $resu = array();
     if($ptrQuery){
         $resu[] = '<table border = "2">';
-        $attributs = array("Athlète_Nom","Athlète_Prénom");
+        $attributs = array("Nom","Prénom","Nationalité","Sexe","Sport catégorie","Sport type");
         foreach($attributs as $att){
             $resu[] .= "<th> $att </th>";
         }
@@ -275,6 +275,7 @@ function deleteAthlete(String $id) {
     $query = 'DELETE FROM Athlète WHERE Athlète_Id = $1';
     pg_prepare($ptrDB, 'reqPrepDeletAthlete',$query);
     pg_execute($ptrDB,'reqPrepDeletAthlete',array($id));
+    return getAllAthlete();
 }
 // Suppression dans la table Sport
 function deleteSport(String $id) {
@@ -284,6 +285,8 @@ function deleteSport(String $id) {
     pg_prepare($ptrDB, 'reqPrepDeletSport',$query);
     pg_execute($ptrDB,'reqPrepDeletSport',array($id));
 }
+
+//Affichage de l'athlè
 function getAthleteByNom(String $nom) : array {
     $ptrDB = connexion();
     $query = "SELECT * FROM Athlète WHERE Athlète_Nom = $1";
@@ -303,7 +306,9 @@ function getAthleteByNom(String $nom) : array {
     pg_close($ptrDB);
     return $resu;
 }
-/*function getFormulaire(array $formu){
+// Formuliare
+// A modfier
+function getFormulaire(array $formu){
     $ptrDB = connexion();
     //Preparation de la requete
     $query = "SELECT Athlète_Nom AS Nom, Athlète_Prénom AS prènom,Athlète_Nationalité AS nationalité, Athlète_Sexe 
@@ -311,8 +316,18 @@ function getAthleteByNom(String $nom) : array {
     pg_prepare($ptrDB,'reqDuFormulaire',$query);
     //execution de la requete
     $ptrQuery = pg_execute($ptrDB,'reqDuFormulaire',$formu);
-    while($lignes = pg_fetch_row($ptrQuery)){
-        $resu = "<option value='".$lignes['Athlète_Nom']."'>".$lignes['Athlète_Nom']." (".$lignes['Athlète_Prénom']
+    while ($ligne = pg_fetch_row($ptrQuery)) {
+        listeDeroulante($ligne);
     }
-}*/
+}
+// UNE COLONNE DE PLUS AVEC LE MODIFIER CLIQUABLE POUR MODIFIER D 'UNE MANIERE MANUELLE LE NOM, PRENOM 
+//NATIONALITÉ ET LE SEXE
+function listeDeroulante(array $att){
+    $formulaire = "<select>";
+    foreach($att as $val){
+        $formulaire .= "<option value = '$val'> $val </option>";
+    }
+    $formulaire .= "</select>";
+    return $formulaire;
+}
 ?>

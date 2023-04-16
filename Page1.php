@@ -21,7 +21,7 @@ $pageHTML .= '<p><a href="Page2.php"> Inserer un élément dans le tableau </a><
 $pageHTML .= intoBalise("p",'Pour supprimer un élément, veuillez suivre ce lien');
 $pageHTML .= '<p><a href="Page4.php"> Supprimer un élément du tableau </a></p>';
 $pageHTML .= intoBalise("p",'Pour mettre a jou un élément dans le tableau');
-$pageHTML .= '<p><a href="Avenir.php"> Update du tableau </a></p>';
+$pageHTML .= '<p><a href="Page5.php"> Update du tableau </a></p>';
 
 $pageHTML .= intoBalise("p",'Le tableau des sport');
 $Tableau2 = getAllSport();
@@ -33,7 +33,7 @@ $pageHTML .= '<p><a href="Avenir.php"> Inserer un élément dans le tableau </a>
 $pageHTML .= intoBalise("p",'Pour supprimer un élément, veuillez suivre ce lien');
 $pageHTML .= '<p><a href="Avenir.php"> Supprimer un élément du tableau </a></p>';
 $pageHTML .= intoBalise("p",'Pour mettre a jou un élément dans le tableau');
-$pageHTML .= '<p><a href="Avenir.php"> Update du tableau </a></p>';
+$pageHTML .= '<p><a href="Page5.php"> Update du tableau </a></p>';
 
 $pageHTML .= intoBalise("p",'Le tableau pratique');
 $Tableau3 = getAllPratique();

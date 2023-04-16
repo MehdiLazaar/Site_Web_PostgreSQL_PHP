@@ -14,7 +14,7 @@ if(isset($_GET['Envoyer'])){
 		echo "Veuillez renseigner un ID valide";
 	} else {
 		deleteAthlete($Id);
-		//print_r(getAllAthlete());
+		getAllAthlete();
 	}
 }
 echo $pageHTML;
