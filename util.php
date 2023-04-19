@@ -1,14 +1,14 @@
 <?php
 // début du document HTML 5
 function getDebutHTML(string $title='Title content') : string {
-    return '<!doctype html>
-    <html lang="fr">
+    return "<!doctype html>
+    <html lang='fr'>
     <head>
-      <meta charset="utf-8">
-      <title>Page d\'accueil</title>
-      <link rel="stylesheet" href="Projet.css">
+      <meta charset='utf-8'>
+      <title>$title</title>
+      <link rel='stylesheet' href='Projet.css'>
     </head>
-    <body>';
+    <body>";
 }
 
 // fin du document HTML
@@ -51,19 +51,19 @@ function intoBalise(string $nomElement, string $contenuElement,
 function getInputText(array $name){
     $formulaire = "";
     foreach($name as $attribut){
-      $formulaire .= "<p><b> $attribut : </b><input type='text' name='$attribut' size='15' /></p>";
+      $formulaire .= "<label> $attribut : <input type='text' name='$attribut' size='15' /></label>";
     }
     return $formulaire;
 }
 
 function getInputPassword($attribut){
-    $formulaire = "<p><b> $attribut : </b><input type='password' name='$attribut' size='15' /></p>";
+    $formulaire = "<label> $attribut : <input type='password' name='$attribut' size='15' /></label>";
     return $formulaire;
 }
 function getInputNumber(array $name){
     $formulaire = "";
     foreach($name as $attribut){
-      $formulaire .= "<p><b> $attribut : </b><input type='number' name='$attribut' size='15' /></p>";
+      $formulaire .= "<label><b> $attribut : <input type='number' name='$attribut' size='15' /></label>";
     }
     return $formulaire;
 }
@@ -139,7 +139,7 @@ function getSportById(String $id) : array {
     pg_close($ptrDB);
     return $resu;
 }
-function getAllAthlete() : array {
+/*function getAllAthlete() : array {
     $ptrDB = connexion();
     $query = "SELECT * FROM Athlète";
     //Preparation de la requete
@@ -168,7 +168,113 @@ function getAllAthlete() : array {
     pg_free_result($ptrQuery);
     pg_close($ptrDB);
     return $resu;
+}*/
+/*
+function getAllAthlete() : array {
+    $ptrDB = connexion();
+    $query = "SELECT * FROM Athlète";
+    //Preparation de la requete
+    pg_prepare($ptrDB,'reqPrepSelectAll',$query);
+    $ptrQuery = pg_execute($ptrDB,'reqPrepSelectAll',array());
+    $resu = array();
+    if($ptrQuery){
+        $resu[] = '<table border="2">';
+        $attributs = array("Athlète_Id","Nom","Prénom","Nationalité","Sexe","Update");
+        foreach($attributs as $att){
+            $resu[] .= "<th>$att</th>" ;
+        }
+        $resu[] .= "</tr>";
+        while($ligne = pg_fetch_row($ptrQuery)){
+            $resu[] .= "<tr>";
+            foreach($ligne as $colonne){
+                $resu[] .= "<td>";
+                $resu[] .= $colonne." ";
+                $resu[] .= "</td>";
+            }
+            // Add hyperlink column
+            $id = $ligne[0];
+            $resu[] .= "<td><a href='updateAth.php?Athlète_Id=$id'>Modif</a></td>";
+            $resu[] .= "</tr>";
+        }
+        $resu[] .= "</table>";
+    }
+    pg_free_result($ptrQuery);
+    pg_close($ptrDB);
+    return $resu;
+}*/
+function getAllAthlete() : array {
+    $ptrDB = connexion();
+    $query = "SELECT * FROM Athlète";
+    //Preparation de la requete
+    pg_prepare($ptrDB,'reqPrepSelectAll',$query);
+    $ptrQuery = pg_execute($ptrDB,'reqPrepSelectAll',array());
+    $resu = array();
+    if($ptrQuery){
+        $resu[] = '<table border="2">';
+        $attributs = array("Athlète_Id","Nom","Prénom","Nationalité","Sexe","Update","Supprimer");
+        foreach($attributs as $att){
+            $resu[] .= "<th>$att</th>" ;
+        }
+        $resu[] .= "</tr>";
+        while($ligne = pg_fetch_assoc($ptrQuery)){
+            $resu[] .= "<tr>";
+            foreach($ligne as $colonne){
+                $resu[] .= "<td>";
+                $resu[] .= $colonne." ";
+                $resu[] .= "</td>";
+            }
+            // Add hyperlink columns
+            $id = isset($ligne['Athlète_Id']) ? $ligne['Athlète_Id'] : '';
+            $resu[] .= "<td><a href='updateAth.php?id=$id'>Modif</a></td>";
+            $resu[] .= "<td><a href='supprimerAth.php?id=$id'>Supprimer</a></td>";
+            $resu[] .= "</tr>";
+        }
+        $resu[] .= "</table>";
+    }
+    pg_free_result($ptrQuery);
+    pg_close($ptrDB);
+    return $resu;
 }
+
+/*function getAllAthlete() : array {
+    $ptrDB = connexion();
+    $query = "SELECT * FROM Athlète";
+    //Preparation de la requete
+    pg_prepare($ptrDB,'reqPrepSelectAll',$query);
+    $ptrQuery = pg_execute($ptrDB,'reqPrepSelectAll',array());
+    $resu = array();
+    if($ptrQuery){
+        $resu[] = '<table border="2">';
+        $attributs = array("Athlète Id","Nom","Prénom","Nationalité","Sexe","Update","Supprimer");
+        foreach($attributs as $att){
+            $resu[] .= "<th>$att</th>" ;
+        }
+        $resu[] .= "</tr>";
+        while($ligne = pg_fetch_row($ptrQuery)){
+            $resu[] .= "<tr>";
+            foreach($ligne as $colonne){
+                $resu[] .= "<td>";
+                $resu[] .= $colonne." ";
+                $resu[] .= "</td>";
+            }
+            // Add hyperlink column for update
+            $id = $ligne[0];
+            $resu[] .= "<td><a href='updateAth.php?id=$id'>Modif</a></td>";
+            // Add hyperlink column for delete
+            $resu[] .= "<td><a href='delete.php?id=$id'>Suppr</a></td>";
+            $resu[] .= "</tr>";
+        }
+        $resu[] .= "</table>";
+    }
+    pg_free_result($ptrQuery);
+    pg_close($ptrDB);
+    return $resu;
+}*/
+
+
+
+
+/*
 function getAllSport() : array {
     $ptrDB = connexion();
     $query = "SELECT * FROM Sport";
@@ -191,6 +297,84 @@ function getAllSport() : array {
                 $resu[] .= "</td>";
             }
             $numeroLigne++;
+            $resu[] .= "</tr>";
+        }
+    $resu[] .= "</table>";
+}
+    pg_free_result($ptrQuery);
+    pg_close($ptrDB);
+    return $resu;
+}*/
+/*function getAllSport() : array {
+    $ptrDB = connexion();
+    $query = "SELECT * FROM Sport";
+    //Préparation de la requête
+    pg_prepare($ptrDB, 'reqPrepSelectSportAll', $query);
+    $ptrQuery = pg_execute($ptrDB, 'reqPrepSelectSportAll', array());
+    $resu = array();
+    if($ptrQuery){
+        $resu[] = '<table border = "2">';
+        $attributs = array("Sport Id","Catégorie","Type","Update","Supprimer");
+        foreach($attributs as $att){
+            $resu[] .= "<th> $att </th>";
+        }
+        while($ligne = pg_fetch_assoc($ptrQuery)){
+            $resu[] .=  "<tr>";
+            foreach($ligne as $valeur){
+                $resu[] .= "<td>";
+                $resu[] .=  $valeur." ";
+                $resu[] .= "</td>";
+            }
+            $id = $ligne['sport_id'];
+            $resu[] .= "<td><a href='updateSport.php?id=$id'>Modif</a></td>";
+            $resu[] .= "<td><a href='supprimerSport.php?id=$id'>Supprimer</a></td>";
+            $resu[] .= "</tr>";
+        }
+        $resu[] .= "</table>";
+    }
+    pg_free_result($ptrQuery);
+    pg_close($ptrDB);
+    return $resu;
+} */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function getAllSport() : array {
+    $ptrDB = connexion();
+    $query = "SELECT * FROM Sport";
+    //Preparation de la requete
+    pg_prepare($ptrDB,'reqPrepSelectSportAll',$query);
+    $ptrQuery = pg_execute($ptrDB,'reqPrepSelectSportAll',array());
+    $resu = array();
+    if($ptrQuery){
+        $resu[] = '<table border = "2">';
+        $attributs = array("Sport Id","Catégorie","Type","Update","Supprimer");
+        foreach($attributs as $att){
+            $resu[] .= "<th> $att </th>";
+        }
+        $numeroLigne = 0;
+        while($ligne = pg_fetch_row($ptrQuery)){
+            $resu[] .=  "<tr>";
+            for($j = 0; $j < count($ligne); $j++){
+                $resu[] .= "<td>";
+                $resu[] .=  $ligne[$j]." ";
+                $resu[] .= "</td>";
+            }
+            $numeroLigne++;
+            $id = $ligne[0];
+            $resu[] .= "<td><a href='updateSport.php?id=$id'>Modif</a></td>";
+            $resu[] .= "<td><a href='supprimerSport.php?id=$id'>Supprimer</a></td>";
             $resu[] .= "</tr>";
         }
     $resu[] .= "</table>";

@@ -2,7 +2,7 @@
 include 'util.php';
 include 'monEnv.php';
 include 'connexBD.php';
-include 'Page2.php';
+include 'insertionAth.php';
 insertIntoAthlete($_GET);
 getAllAthlete();
 ?>

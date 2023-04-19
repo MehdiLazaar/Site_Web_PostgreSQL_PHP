@@ -3,7 +3,7 @@ include_once 'util.php';
 include 'monEnv.php';
 include 'connexBD.php';
 $pageHTML = getDebutHTML("Insertion dnas la table athlète");
-$pageHTML .= "<form action='Page3.php' method='GET'>";
+$pageHTML .= "<form method='GET'>";
 $pageHTML .= getInputNumber([" Athlète_Id"]);
 $attri = array("Nom","Prenom","Nationalité");
 $pageHTML .= getInputText($attri);
@@ -19,11 +19,18 @@ if (isset($_GET['Envoyer'])) {
     $Prenom = $_GET['Prenom'];
     $Nationalite = $_GET['Nationalité'];
     $Sexe = $_GET['Sexe'];
+    insertIntoAthlete($_GET);
+    $tableau = getAllAthlete();
+    foreach($tableau as $ligne){
+        $pageHTML .= $ligne;
+    }
     if (empty($Id) || empty($Nom) || empty($Prenom) || empty($Nationalite) || empty($Sexe)) {
         $erreur = "Veuillez remplir tous les champs.";
         echo $erreur;
     }
 }
+$pageHTML .= "<a href = 'Page1.php'> Page précédente </a>";
 $pageHTML .= getFinHTML();
 echo $pageHTML;
+//Bolt Usain  Jamaïcaine  Homme 
 ?>
