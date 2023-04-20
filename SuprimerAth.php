@@ -25,8 +25,8 @@ $pageHTML .= "<a href = 'Accueil.php'> Page précédente </a>";
 echo $pageHTML;*/
 //Récupération de l'ID de la ligne à modifier :
 $pageHTML = getDebutHTML("Suppression dnas la table athlète");
-if (isset($_GET['id'])) {
-	$id = intval($_GET['id']);
+if (isset($_POST['id'])) {
+	$id = $_POST['id'];
 	deleteAthlete($id);
 	$tableau = getAllAthlete();
     foreach($tableau as $ligne){

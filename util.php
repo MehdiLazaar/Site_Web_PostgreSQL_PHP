@@ -154,8 +154,14 @@ function getAllAthlete() : array {
             }
             // Add hyperlink columns
             $id = isset($ligne['Athlète_Id']) ? $ligne['Athlète_Id'] : '';
-            $resu[] .= "<td><a href='updateAth.php?id=$id'>Modif</a></td>";
-            $resu[] .= "<td><a href='SuprimerAth.php?id=$id'>Supprimer</a></td>";
+            //$resu[] .= "<td><a href='updateAth.php?id=$id'>Modif</a></td>";
+            $resu[] .= "<td><form method='POST' action='updateAth.php'><input
+                            type='hidden' name='id' value='$id'><button
+                            type='submit'>Modifier</button></form></td>";
+
+            $resu[] .= "<td><form method='POST' action='SuprimerAth.php'><input
+                            type='hidden' name='id' value='$id'><button
+                            type='submit'>Supprimer</button></form></td>";
             $resu[] .= "</tr>";
         }
         $resu[] .= "</table>";
