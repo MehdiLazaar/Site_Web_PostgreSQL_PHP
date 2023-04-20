@@ -11,7 +11,7 @@ if (isset($_POST['Enregistrer'])) {
   } 
 else {
   // Redirection vers la nouvelle page avec header()
-  header("Location: Page1.php");
+  header("Location: Accueil.php");
   }
 }
 else {

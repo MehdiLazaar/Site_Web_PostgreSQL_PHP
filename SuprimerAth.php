@@ -2,7 +2,8 @@
 include_once 'util.php';
 include 'monEnv.php';
 include 'connexBD.php';
-$pageHTML = getDebutHTML("Suppression d'un element dans la table");
+
+/*$pageHTML = getDebutHTML("Suppression d'un element dans la table");
 $pageHTML .= "<form action='SuprimerAth.php' method='GET'>";
 $pageHTML .= getInputNumber([" Athlète_Id"]);
 $pageHTML .= "<p><input type='submit' name='Envoyer' value='Envoyer' /></p>
@@ -21,5 +22,18 @@ if(isset($_GET['Envoyer'])){
 	}
 }
 $pageHTML .= "<a href = 'Accueil.php'> Page précédente </a>";
+echo $pageHTML;*/
+//Récupération de l'ID de la ligne à modifier :
+$pageHTML = getDebutHTML("Suppression dnas la table athlète");
+if (isset($_GET['id'])) {
+	$id = intval($_GET['id']);
+	deleteAthlete($id);
+	$tableau = getAllAthlete();
+    foreach($tableau as $ligne){
+        $pageHTML .= $ligne;
+    }
+}
+$pageHTML .= getFinHTML();
 echo $pageHTML;
+
 ?>

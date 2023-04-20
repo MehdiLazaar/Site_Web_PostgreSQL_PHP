@@ -29,7 +29,7 @@ if (isset($_GET['Envoyer'])) {
         echo $erreur;
     }
 }
-$pageHTML .= "<a href = 'Page1.php'> Page précédente </a>";
+$pageHTML .= "<a href = 'Accueil.php'> Page précédente </a>";
 $pageHTML .= getFinHTML();
 echo $pageHTML;
 //Bolt Usain  Jamaïcaine  Homme 
