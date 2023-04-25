@@ -146,6 +146,7 @@ function getAllAthlete() : array {
         }
         $resu[] .= "</tr>";
         while($ligne = pg_fetch_assoc($ptrQuery)){
+            //$numb = 1;
             $resu[] .= "<tr>";
             foreach($ligne as $colonne){
                 $resu[] .= "<td>";
@@ -153,16 +154,18 @@ function getAllAthlete() : array {
                 $resu[] .= "</td>";
             }
             // Add hyperlink columns
+            //$id = $numb;
             $id = isset($ligne['Athlète_Id']) ? $ligne['Athlète_Id'] : '';
             //$resu[] .= "<td><a href='updateAth.php?id=$id'>Modif</a></td>";
-            $resu[] .= "<td><form method='POST' action='updateAth.php'><input
+            $resu[] .= "<td><form method='GET' action='updateAth.php'><input
                             type='hidden' name='id' value='$id'><button
                             type='submit'>Modifier</button></form></td>";
 
-            $resu[] .= "<td><form method='POST' action='SuprimerAth.php'><input
+            $resu[] .= "<td><form method='GET' action='SuprimerAth.php'><input
                             type='hidden' name='id' value='$id'><button
                             type='submit'>Supprimer</button></form></td>";
             $resu[] .= "</tr>";
+            //$numb++;
         }
         $resu[] .= "</table>";
     }
@@ -235,12 +238,15 @@ function getAllPratique() : array {
 }
 //Insertion dans la table Athlete.
 function insertIntoAthlete(array $athlete) : array {
-    $ptrDB = connexion();
-    $query = 'INSERT INTO Athlète VALUES($1,$2,$3,$4,$5)';
+    $ptrDB = connexion(); $query = "INSERT INTO Athlète VALUES(DEFAULT,$1,$2,$3,$4) RETURNING Athlète_Id";
     pg_prepare($ptrDB,'reqPrepInsertIntoAthlete',$query);
-    pg_execute($ptrDB,'reqPrepInsertIntoAthlete',$athlete);
-    return getAthleteById($athlete['Athlète_Id']);
-}
+    $result = pg_execute($ptrDB, 'reqPrepInsertIntoAthlete', $athlete);
+    $newAthlete = pg_fetch_assoc($result);
+    if (!isset($newAthlete['Athlète_Id'])) {
+        return array("message" => "Erreur lors de l'insertion de l'athlète dans la base de données");
+    }
+    return getAthleteById($newAthlete['Athlète_Id']);
+}   
 //Insertion dans la table Sport.
 function insertIntoSport(array $spt) : array {
     $ptrDB = connexion();
@@ -311,7 +317,7 @@ function getAthleteByNom(String $nom) : array {
 }
 // Formuliare
 // A modfier
-function getFormulaire(array $formu){
+/*function getFormulaire(array $formu){
     $ptrDB = connexion();
     //Preparation de la requete
     $query = "SELECT Athlète_Nom AS Nom, Athlète_Prénom AS prènom,Athlète_Nationalité AS nationalité, Athlète_Sexe 
@@ -322,11 +328,13 @@ function getFormulaire(array $formu){
     while ($ligne = pg_fetch_row($ptrQuery)) {
         listeDeroulante($ligne);
     }
-}
-// UNE COLONNE DE PLUS AVEC LE MODIFIER CLIQUABLE POUR MODIFIER D 'UNE MANIERE MANUELLE LE NOM, PRENOM 
-//NATIONALITÉ ET LE SEXE
-function listeDeroulante(array $att){
-    $formulaire = "<select>";
+}*/
+function listeDeroulante(String $req,String $titre, array $att){
+    $ptrDB = connexion();
+    $query = "SELECT DISTINCT $req FROM Sport";
+    pg_prepare($ptrDB,'reqDeLaListeDeroulante',$query);
+    $ptrQuery = pg_execute($ptrDB,'reqDuFormulaire',$att);
+    $formulaire = "<label for= '$titre'> '$titre'</label><select>";
     foreach($att as $val){
         $formulaire .= "<option value = '$val'> $val </option>";
     }

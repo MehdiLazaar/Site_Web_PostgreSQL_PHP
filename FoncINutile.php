@@ -211,4 +211,40 @@ function getAllAthlete() : array {
     $inputHtml .= "/>";
     return $inputHtml;
 }*/
+
+/*function insertIntoAthlete(array $athlete) : array {
+    $ptrDB = connexion();
+    $query = 'INSERT INTO Athlète VALUES(DEFAULT,$2,$3,$4,$5)';
+    pg_prepare($ptrDB,'reqPrepInsertIntoAthlete',$query);
+    pg_execute($ptrDB,'reqPrepInsertIntoAthlete',$athlete);
+    return getAthleteById($athlete['Athlète_Id']);
+}*/
+/*function insertIntoAthlete(array $athlete) : array {
+    $ptrDB = connexion();
+    $query = 'INSERT INTO Athlète(Athlète_Id,Athlète_Nom,Athlète_Prénom,Athlète_Nationalité,Athlète_Sexe) VALUES(DEFAULT,$2,$3,$4,$5) RETURNING Athlète_Id';
+    pg_prepare($ptrDB,'reqPrepInsertIntoAthlete',$query);
+    $result = pg_execute($ptrDB, 'reqPrepInsertIntoAthlete', $athlete);
+    $newAthlete = pg_fetch_assoc($result);
+    return getAthleteById($athlete['Athlète_Id']);
+}*/
+/*function insertIntoAthlete(array $athlete) : array {
+    $ptrDB = connexion();
+    $query = "INSERT INTO Athlète VALUES(DEFAULT,$1,$2,$3,$4) RETURNING Athlète_Id";
+    $result = pg_prepare($ptrDB,'reqPrepInsertIntoAthlete',$query);
+    $newAthlete = pg_fetch_assoc($result);
+    return getAthleteById($newAthlete['Athlète_Id']);
+}*/
+
+/*function insertIntoAthlete(array $athlete) : array { 
+    $ptrDB = connexion();
+    $queryAthlete = 'INSERT INTO Athlète VALUES($1,$2,$3,$4,$5)';
+    $queryPratique = 'INSERT INTO Pratique VALUES($1,$2,$3)';
+    // Préparation des requêtes
+    pg_prepare($ptrDB,'reqPrepInsertIntoAthlete',$queryAthlete);
+    pg_prepare($ptrDB,'reqPrepInsertIntoPratique',$queryPratique);
+    // Exécution des requêtes
+    pg_execute($ptrDB,'reqPrepInsertIntoAthlete',$athlete);
+    pg_execute($ptrDB,'reqPrepInsertIntoPratique', array($athlete['Athlète_Id'],$athlete['Pratique_Id'], $athlete['Niveau'])); 
+    return getAthleteById($athlete['Athlète_Id']);
+}*/ 
 ?>
