@@ -18,8 +18,6 @@ foreach($Tableau1 as $ligne){
 }
 $pageHTML .= intoBalise("p",'Pour inserer un élément, veuillez suivre ce lien');
 $pageHTML .= '<p><a href="insertionAth.php"> Inserer un élément dans le tableau </a></p>';
-$pageHTML .= intoBalise("p",'Pour supprimer un élément, veuillez suivre ce lien');
-$pageHTML .= '<p><a href="SuprimerAth.php"> Supprimer un élément du tableau </a></p>';
 
 
 $pageHTML .= intoBalise("p",'Le tableau des sport');
@@ -29,8 +27,6 @@ foreach($Tableau2 as $ligne){
 }
 $pageHTML .= intoBalise("p",'Pour inserer un élément, veuillez suivre ce lien');
 $pageHTML .= '<p><a href="InsereSport.php"> Inserer un élément dans le tableau </a></p>';
-$pageHTML .= intoBalise("p",'Pour supprimer un élément, veuillez suivre ce lien');
-$pageHTML .= '<p><a href="Avenir.php"> Supprimer un élément du tableau </a></p>';
 
 
 $pageHTML .= intoBalise("p",'Le tableau pratique');

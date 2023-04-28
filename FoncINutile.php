@@ -34,6 +34,65 @@ function getAllAthlete() : array {
 }
 
 
+/*function getAllSportTypes() {
+    $ptrDB = connexion();
+    //La requete
+    $query = "SELECT DISTINCT Sport_Type FROM Sport";
+    //retourne un objet ressource qui représente le résultat de la requête.
+    //Cet objet ressource peut ensuite être utilisé pour récupérer les données retournées par la //requête
+    $result = pg_query($ptrDB, $query);
+    $sportTypes = [];
+    while ($row = pg_fetch_assoc($result)) {
+        $sportTypes[] = $row['Sport_Type'];
+    }
+    return $sportTypes;
+}*/
+
+/*function getAllAthlete() : array {
+    $ptrDB = connexion();
+    $query = "SELECT * FROM Athlète";
+    //Preparation de la requete
+    pg_prepare($ptrDB,'reqPrepSelectAll',$query);
+    $ptrQuery = pg_execute($ptrDB,'reqPrepSelectAll',array());
+    $resu = array();
+    if($ptrQuery){
+        $resu[] = '<table border="2">';
+        $attributs = array("Athlète_Id","Nom","Prénom","Nationalité","Sexe","Update","Supprimer");
+        foreach($attributs as $att){
+            $resu[] .= "<th>$att</th>" ;
+        }
+        $resu[] .= "</tr>";
+        while($ligne = pg_fetch_assoc($ptrQuery)){
+            //$numb = 1;
+            $resu[] .= "<tr>";
+            foreach($ligne as $colonne){
+                $resu[] .= "<td>";
+                $resu[] .= $colonne." ";
+                $resu[] .= "</td>";
+            }
+            // Add hyperlink columns
+            //$id = $numb;
+            $id = isset($ligne['Athlète_Id']) ? $ligne['Athlète_Id'] : '';
+            //$resu[] .= "<td><a href='updateAth.php?id=$id'>Modif</a></td>";
+            $resu[] .= "<td><form method='GET' action='updateAth.php'><input
+                            type='hidden' name='id' value='$id'><button
+                            type='submit'>Modifier</button></form></td>";
+
+            $resu[] .= "<td><form method='GET' action='SuprimerAth.php'><input
+                            type='hidden' name='id' value='$id'><button
+                            type='submit'>Supprimer</button></form></td>";
+            $resu[] .= "</tr>";
+            //$numb++;
+        }
+        $resu[] .= "</table>";
+    }
+    pg_free_result($ptrQuery);
+    pg_close($ptrDB);
+    return $resu;
+}*/
+
+
+
 /*function getAllSport() : array {
     $ptrDB = connexion();
     $query = "SELECT * FROM Sport";
@@ -247,4 +306,120 @@ function getAllAthlete() : array {
     pg_execute($ptrDB,'reqPrepInsertIntoPratique', array($athlete['Athlète_Id'],$athlete['Pratique_Id'], $athlete['Niveau'])); 
     return getAthleteById($athlete['Athlète_Id']);
 }*/ 
+
+/*function getSportIdByCategoryAndType(string $category, string $type): ?int {
+    $ptrDB = connexion();
+    $query = "SELECT Sport_Id FROM Sport WHERE Sport_Catégorie = $1 AND Sport_Type = $2";
+    pg_prepare($ptrDB, 'reqGetSportIdByCategoryAndType', $query);
+    $result = pg_execute($ptrDB, 'reqGetSportIdByCategoryAndType', [$category, $type]);
+    if ($result && pg_num_rows($result) > 0) {
+        $row = pg_fetch_assoc($result);
+        return intval($row['Sport_Id']);
+    } else {
+        return null;
+    }
+}*/
+
+// Formuliare
+// A modfier
+/*function getFormulaire(array $formu){
+    $ptrDB = connexion();
+    //Preparation de la requete
+    $query = "SELECT Athlète_Nom AS Nom, Athlète_Prénom AS prènom,Athlète_Nationalité AS nationalité, Athlète_Sexe 
+    AS Sexe, Sport_Catégorie, Sport_Type FROM Athlète NATURAL JOIN Sport NATURAL JOIN Pratique";
+    pg_prepare($ptrDB,'reqDuFormulaire',$query);
+    //execution de la requete
+    $ptrQuery = pg_execute($ptrDB,'reqDuFormulaire',$formu);
+    while ($ligne = pg_fetch_row($ptrQuery)) {
+        listeDeroulante($ligne);
+    }
+}*/
+/*function listeDeroulante(String $req,String $titre, array $att){
+    $ptrDB = connexion();
+    $query = "SELECT DISTINCT $req FROM Sport";
+    pg_prepare($ptrDB,'reqDeLaListeDeroulante',$query);
+    $ptrQuery = pg_execute($ptrDB,'reqDuFormulaire',$att);
+    $formulaire = "<label for= '$titre'> '$titre'</label><select>";
+    foreach($att as $val){
+        $formulaire .= "<option value = '$val'> $val </option>";
+    }
+    $formulaire .= "</select>";
+    return $formulaire;
+}*/
+
+/*function insertIntoAthlete(array $athlete) : array {
+    $ptrDB = connexion(); $query = "INSERT INTO Athlète VALUES(DEFAULT,$1,$2,$3,$4) RETURNING Athlète_Id";
+    pg_prepare($ptrDB,'reqPrepInsertIntoAthlete',$query);
+    $result = pg_execute($ptrDB, 'reqPrepInsertIntoAthlete', $athlete);
+    $newAthlete = pg_fetch_assoc($result);
+    if (!isset($newAthlete['Athlète_Id'])) {
+        return array("message" => "Erreur lors de l'insertion de l'athlète dans la base de données");
+    }
+    return $athleteId = getAthleteById($newAthlete['Athlète_Id']);
+} */
+/*function insertIntoAthlete(array $athlete) : array {
+    $ptrDB = connexion();
+    $query = "INSERT INTO Athlète VALUES(DEFAULT,$1,$2,$3,$4) RETURNING Athlète_Id";
+    pg_prepare($ptrDB,'reqPrepInsertIntoAthlete',$query);
+    $result = pg_execute($ptrDB, 'reqPrepInsertIntoAthlete', $athlete);
+    $newAthlete = pg_fetch_row($result);
+    if (!$newAthlete) {
+        return array("message" => "Erreur lors de l'insertion de l'athlète dans la base de données");
+    }
+    return $athleteId = $newAthlete[0];
+}*/
+
+/*function getAllAthlete() : array {
+    $ptrDB = connexion();
+    $query = "SELECT * FROM Athlète";
+    //Preparation de la requete
+    pg_prepare($ptrDB,'reqPrepSelectAll',$query);
+    $ptrQuery = pg_execute($ptrDB,'reqPrepSelectAll',array());
+    $resu = array();
+    if($ptrQuery){
+        $resu[] = '<table border="2">';
+        $attributs = array("Athlète_Id","Nom","Prénom","Nationalité","Sexe","Update","Supprimer");
+        foreach($attributs as $att){
+            $resu[] .= "<th>$att</th>" ;
+        }
+        $resu[] .= "</tr>";
+        while($ligne = pg_fetch_assoc($ptrQuery)){
+            $id = $ligne['Athlète_Id'];
+            $resu[] .= "<tr>";
+            foreach($ligne as $colonne){
+                $resu[] .= "<td>";
+                $resu[] .= $colonne." ";
+                $resu[] .= "</td>";
+            }
+            // Add hyperlink columns
+            $resu[] .= "<td><form method='GET' action='updateAth.php'><input
+                            type='hidden' name='id' value='$id'><button
+                            type='submit'>Modifier</button></form></td>";
+
+            $resu[] .= "<td><form method='GET' action='SuprimerAth.php'><input
+                            type='hidden' name='id' value='$id'><button
+                            type='submit'>Supprimer</button></form></td>";
+            $resu[] .= "</tr>";
+        }
+        $resu[] .= "</table>";
+    }
+    pg_free_result($ptrQuery);
+    pg_close($ptrDB);
+    return $resu;
+}*/
+
+/*function getSportID(string $sportcategory, string $sporttype){
+    $ptrDB = connexion();
+    $query = "SELECT Sport_Id FROM Sport WHERE Sport_Catégorie = $1 AND Sport_Type = $2";
+    pg_prepare($ptrDB, 'reqgetSportID', $query);
+    $result = pg_execute($ptrDB, 'reqgetSportID', [$sportcategory, $sporttype]);
+    return $result;
+}*/
+/*function getSportID(array $spCatTyp) {
+    $ptrDB = connexion();
+    $query = "SELECT Sport_Id FROM Sport WHERE Sport_Catégorie = $1 AND Sport_Type = $2";
+    pg_prepare($ptrDB, 'reqgetSportID', $query);
+    $result = pg_execute($ptrDB, 'reqgetSportID', [$spCatTyp['Sport_Catégorie'], $spCatTyp['Sport_Type']]);
+    return $result;
+}*/
 ?>
