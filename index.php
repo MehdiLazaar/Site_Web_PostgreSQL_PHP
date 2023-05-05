@@ -11,12 +11,12 @@ if (isset($_POST['Enregistrer'])) {
   } 
 else {
   // Redirection vers la nouvelle page avec header()
-  header("Location: Accueil.php");
+  header("Location: intro.php");
   }
 }
 else {
 $pageHTML = getDebutHTML("Page d'accueil");
-$pageHTML .= intoBalise("h1","Hii");
+$pageHTML .= intoBalise("h1","Palmares d'athlétisme");
 $pageHTML .= intoBalise("h3","Log in");
 $name = array('Nom','Prenom');
 $pageHTML .= "<form action='index.php' method='POST'>";

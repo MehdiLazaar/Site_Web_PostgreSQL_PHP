@@ -1,7 +1,7 @@
 <?php
 include_once 'util.php';
 include 'monEnv.php';
-include 'connexBD.php';
+
 $pageHTML = getDebutHTML("Insertion dans la table athlète");
 $pageHTML .= intoBalise('h2',"Insertion d'un nouveau athlète");
 $pageHTML .= intoBalise('p','Veuillez prendre en compte les types de sports proposés dans le tableau ci-dessous');
@@ -13,6 +13,7 @@ $valeurs = array("Homme","Femme");
 $nomVar = "Sexe";
 $pageHTML .= getRadiosFromArray($valeurs,$nomVar);
 $pageHTML .= listeDeroulante('Sport_Catégorie', 'Catégorie');
+$pageHTML .= '<br>';
 $pageHTML .= getInputText(['Sport_Type']);
 $tab = getSportCatType();
 foreach($tab as $att){

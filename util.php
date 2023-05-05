@@ -7,6 +7,7 @@ function getDebutHTML(string $title='Title content') : string {
       <meta charset='utf-8'>
       <title>$title</title>
       <link rel='stylesheet' href='Projet.css'>
+      <link rel='icon' href='https://etapes.com/app/uploads/2011/01/rio-devoile-le-logo-des-jo-2016-1.jpg'>
     </head>
     <body>";
 }
@@ -90,19 +91,28 @@ function connexion(){
     $ptrDB = pg_connect($strConnex);
     return $ptrDB;
 }
-
 function getAthleteById(String $id) : array {
     $ptrDB = connexion();
     $query = "SELECT * FROM Athlète WHERE Athlète_Id = $1";
     // La fonction pg_prepare pour preparer la requete
     pg_prepare($ptrDB,'reqPrepSelectById',$query);
     $ptrQuery = pg_execute($ptrDB,'reqPrepSelectById',array($id));
-    if(isset($ptrQuery)){
-        //recuperation du tableau associatif avec pg_fetch_assoc dans $resu
-        $resu = pg_fetch_row($ptrQuery, 0);
-        if(empty($resu)){
-            $resu = array("message" => "Identifiant d'athlète non valide : $id");
+    $resu = array();
+    if($ptrQuery){
+        $resu[] = '<table border = "2">';
+        $attributs = array("Athlète_Id","Nom","Prénom","Nationalité","Sexe");
+        foreach($attributs as $att){
+            $resu[] .= "<th> $att </th>";
         }
+        while($ligne = pg_fetch_assoc($ptrQuery)){
+            $resu[] .=  "<tr>";
+            foreach($ligne as $valeur){
+                $resu[] .= "<td>";
+                $resu[] .=  $valeur." ";
+                $resu[] .= "</td>";
+            }
+        }
+        $resu[] .= "</table>";
     }
     //Liberation de ressource
     pg_free_result($ptrQuery);
@@ -182,16 +192,20 @@ function getAllSport() : array {
         foreach($attributs as $att){
             $resu[] .= "<th> $att </th>";
         }
-        while($ligne = pg_fetch_assoc($ptrQuery)){
+        while($ligne = pg_fetch_row($ptrQuery)){
+            $id = $ligne[0];
             $resu[] .=  "<tr>";
             foreach($ligne as $valeur){
                 $resu[] .= "<td>";
                 $resu[] .=  $valeur." ";
                 $resu[] .= "</td>";
             }
-            $id = $ligne['sport_id'];
-            $resu[] .= "<td><a href='updateSport.php?id=$id'>Modif</a></td>";
-            $resu[] .= "<td><a href='supprimerSport.php?id=$id'>Supprimer</a></td>";
+            $resu[] .= "<td><form method='GET' action='updateSport.php'><input
+                        type='hidden' name='id' value='$id'><button
+                        type='submit'>Modifier</button></form></td>";
+            $resu[] .= "<<td><form method='GET' action='SupprimerSport.php'><input
+                        type='hidden' name='id' value='$id'><button
+                        type='submit'>Supprimer</button></form></td>";
             $resu[] .= "</tr>";
         }
         $resu[] .= "</table>";
@@ -247,10 +261,13 @@ function insertIntoAthlete(array $athlete) : array {
 //Insertion dans la table Sport.
 function insertIntoSport(array $spt) : array {
     $ptrDB = connexion();
-    $query = 'INSERT INTO Sport VALUES($1,$2,$3)';
+    $query = 'INSERT INTO Sport VALUES(DEFAULT,$1,$2) RETURNING Sport_Id';
     pg_prepare($ptrDB,'reqPrepInsertIntoSport',$query);
-    pg_execute($ptrDB,'reqPrepInsertIntoSport',$spt);
-    return getSportById($spt['Sport_Id']);
+    $result = pg_execute($ptrDB,'reqPrepInsertIntoSport',$spt);
+    $newSPort = pg_fetch_row($result);
+    $sportId = $newSPort[0];
+    return array($sportId);
+    //return getSportById($sportId);
 }
 
 //Méthode d'insertion dans la table pratique
@@ -270,7 +287,7 @@ function insertIntoPratique(int $sportId, int $athleteId) : array {
 function updateAthlete(array $Ath) {
     $ptrDB = connexion();
     //Preparation de la requete
-    $query = 'UPDATE Athlète SET Athlète_Nom = $2; Athlète_Prénom = $3, Athlète_Nationalité = $4, Athlète_Sexe = $5 WHERE Athlète_Id = $1';
+    $query = 'UPDATE Athlète SET Athlète_Nom = $2, Athlète_Prénom = $3, Athlète_Nationalité = $4, Athlète_Sexe = $5 WHERE Athlète_Id = $1';
     pg_prepare($ptrDB,'reqUpdateAthlete',$query);
     //execution de la requete
     pg_execute($ptrDB,'reqUpdateAthlete',$Ath);
@@ -281,12 +298,13 @@ function updateAthlete(array $Ath) {
 function updateSport(array $spt) {
     $ptrDB = connexion();
     //Preparation de la requete
-    $query = 'UPDATE Sport SET Sport_Catégorie = $2; Sport_Type = $3 WHERE Sport_Id = $1';
+    $query = 'UPDATE Sport SET Sport_Catégorie = $2, Sport_Type = $3 WHERE Sport_Id = $1';
     pg_prepare($ptrDB,'reqUpdateSport',$query);
     //execution de la requete
     pg_execute($ptrDB,'reqUpdateSport',$spt);
     return getSportById($spt['Sport_Id']);
 }
+
 // Suppression dans la table Athlete
 function deleteAthlete(String $id) {
     $ptrDB = connexion();
@@ -306,12 +324,30 @@ function deleteSport(String $id) {
 }
 
 // Méthode de suppresion dans la table Pratique
-function deletePratique(String $AthleteID) {
+function deletePratiqueAthlete(String $AthleteID) {
     $ptrDB = connexion();
     //Preparation de la requete
     $query = 'DELETE FROM Pratique WHERE Athlète_Id = $1';
     pg_prepare($ptrDB, 'reqPrepDeletSport',$query);
     pg_execute($ptrDB,'reqPrepDeletSport',array($AthleteID));
+}
+function deletePratiqueSport(String $sportID){
+    $ptrDB = connexion();
+    $query = 'DELETE FROM Pratique WHERE Sport_Id = $1';
+    //Preparation de la requete
+    pg_prepare($ptrDB, 'requeteDeleteFromSport',$query);
+}
+function modifiePratiqueAthlete($id, $nom, $prenom, $nationalite, $sexe){
+    $ptrDB = connexion();
+    $query = "UPDATE Athlète SET Athlète_Nom = $2, Athlète_Prénom = $3, Athlète_Nationalité = $4, Athlète_Sexe = $5 WHERE Athlète_Id = $1";
+    pg_prepare($ptrDB, 'reqModifiePratiqueAthlete', $query);
+    pg_execute($ptrDB, 'reqModifiePratiqueAthlete', array($id, $nom, $prenom, $nationalite, $sexe));
+}
+function modifiePratiqueSport($id, $categorie, $type){
+    $ptrDB = connexion();
+    $query = "UPDATE Sport SET Sport_Catégorie = $2, Sport_Type = $3 WHERE Sport_Id = $1";
+    pg_prepare($ptrDB, "reqModifiePratiqueSport", $query);
+    pg_execute($ptrDB, "reqModifiePratiqueSport", array($id,$categorie,$type));
 }
 
 //Affichage de l'athlè
